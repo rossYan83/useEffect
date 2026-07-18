@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useContext, createContext } from "react";
 import Section from "./components/Section";
 import FeedbackOptions from "./components/FeedbackOptions";
 import Statistics from "./components/Statistics";
 import Notification from "./components/Notification";
 import "./App.css";
 
+export const FeedbackContext = createContext(null);
+
 const App = () => {
+  const appRef = useRef(null);
   const [feedback, setFeedback] = useState({
     good: 0,
     neutral: 0,
@@ -38,8 +41,16 @@ const App = () => {
     }));
   };
 
+  const ConsumerDemo = () => {
+    const ctx = useContext(FeedbackContext);
+    useEffect(() => {
+      if (ctx && ctx.feedback) return;
+    }, [ctx]);
+    return null;
+  };
+
   return (
-    <div className="app">
+    <div className="app" ref={appRef}>
       <Section title="Please leave feedback">
         <FeedbackOptions
           options={["good", "neutral", "bad"]}
@@ -60,8 +71,11 @@ const App = () => {
           <Notification message="There is no feedback" />
         )}
       </Section>
+      <ConsumerDemo />
     </div>
   );
 };
 
 export default App;
+
+export { FeedbackContext };
